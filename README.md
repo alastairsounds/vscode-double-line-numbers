@@ -8,6 +8,10 @@ The Visual Studio Code API doesn't support a great way to display anything on th
 
 Any feedback or ideas are appreciated. If you find any bugs, please let me know through issues!
 
+## AKS Notes
+
+Going to be updating this to throttle the changes of the line numbers. For example, using Vim, an action such as `10j` will cause the line numbers to change 10 times. This is not ideal. I will be adding a throttle to the changes so that the line numbers only update once every 100ms.
+
 ## Installation
 
 - Install `Double Line Numbers` in the Extentions Marketplace
@@ -18,13 +22,9 @@ Any feedback or ideas are appreciated. If you find any bugs, please let me know 
 Open the command palette (`Cmd/Ctrl + Shift + P`) and run one of the following commands:
 
 - **Double Line Numbers: Absolute + Relative** - show absolute line numbers on the left and relative line numbers on the right.
-
 - **Double Line Numbers: Relative + Absolute** - show relative line numbers on the left and absolute line numbers on the right.
-
 - **Double Line Numbers: Absolute** - only show absolute line numbers, essentially setting the built-in setting `editor.lineNumbers` to `on`.
-
 - **Double Line Numbers: Relative** - only show relative line numbers, essentially setting the built-in setting `editor.lineNumbers` to `relative`.
-
 - **Double Line Numbers: Off** - turn off all line numbers, essentially setting the built-in setting `editor.lineNumbers` to `off`.
 
 ## Known Issues
