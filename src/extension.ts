@@ -234,35 +234,55 @@ function getSvgUri(num: number) {
     .padStart(3, '\u00A0')}</text></svg>`
 }
 
-/**
- * Activates the extension
- * @param {vscode.ExtensionContext} context context for extension
- */
+// Utility function to debounce
+function debounce<T extends (...args: any[]) => void>(func: T, wait: number): T {
+  let timeout: NodeJS.Timeout | null
+  return ((...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+    timeout = setTimeout(() => {
+      func(...args)
+    }, wait)
+  }) as T
+}
+
+// Activates the extension
 export function activate(context: vscode.ExtensionContext) {
   const mgr = new LineNumberManager(context)
 
   registerCommands(mgr)
 
-  // scroll; create/delete new lines
+  // Wrap `updateDecor` with debounce for smoother updates
+  const throttledUpdateDecor = debounce((editor: vscode.TextEditor) => {
+    mgr.updateDecor(editor)
+  }, 150) // Adjust the wait time as needed
+
+  // Wrap `updateAllDecor` with debounce for batch updates
+  const throttledUpdateAllDecor = debounce(() => {
+    mgr.updateAllDecor()
+  }, 150)
+
+  // Scroll; create/delete new lines
   vscode.window.onDidChangeTextEditorVisibleRanges((event) => {
-    mgr.updateDecor(event.textEditor)
+    throttledUpdateDecor(event.textEditor)
   })
 
-  // click into different editor
+  // Click into different editor
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
-      mgr.updateDecor(editor)
+      throttledUpdateDecor(editor)
     }
   })
 
-  // select new lines in editor
+  // Select new lines in editor
   vscode.window.onDidChangeTextEditorSelection((event) => {
-    mgr.updateDecor(event.textEditor)
+    throttledUpdateDecor(event.textEditor)
   })
 
-  // open/close editors
-  vscode.window.onDidChangeVisibleTextEditors((editors) => {
-    mgr.updateAllDecor()
+  // Open/close editors
+  vscode.window.onDidChangeVisibleTextEditors(() => {
+    throttledUpdateAllDecor()
   })
 }
 
