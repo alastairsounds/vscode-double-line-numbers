@@ -61,3 +61,7 @@ This version doesn't work
 
 - Add customizable font settings
 - New extension icon!
+
+## [0.1.4] - 2024-12-16
+
+- Implemented 150ms throttle for smoother line number changes
